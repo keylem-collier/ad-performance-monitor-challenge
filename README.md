@@ -72,7 +72,7 @@ Copy or import these fixtures into your app. Do not call real Meta, Google, or T
 | **Phase 2** | **Within 24 hours** of our feedback | One personalized follow-up (bug fix or small feature) |
 | **Live review** | 30–45 min | Architecture walkthrough + depth questions |
 
-**Clock starts** when you email us confirming you are starting Phase 1.
+**Clock starts** when you email **kane@versaunt.com** and **greg@versaunt.com** confirming you are starting Phase 1.
 
 ## Deliverables
 
@@ -106,17 +106,47 @@ Before emailing "done", complete [`SUBMISSION_CHECKLIST.md`](SUBMISSION_CHECKLIS
 
 ## Getting started
 
-1. **Use this template** → create your public repo
-2. `npx create-next-app@latest` (or equivalent) inside your repo
+1. **Use this template** → create your **public** repo (see above — do not fork or PR back here)
+2. **Add Next.js** in that repo alongside the template files:
+   - Clone your new repo locally
+   - Run `npx create-next-app@latest .` in the repo root (TypeScript, App Router, ESLint — your choice on Tailwind)
+   - When prompted about existing files, **keep** `mock-data/`, `MOCK_DATA.md`, and other template docs — do not delete them
+   - Copy [`.env.example`](.env.example) to `.env.local` and fill in Supabase keys
 3. Create a free [Supabase](https://supabase.com) project
 4. Read [`MOCK_DATA.md`](MOCK_DATA.md) and [`docs/ARCHITECTURE_HINT.md`](docs/ARCHITECTURE_HINT.md)
 5. Implement auth + schema + mock sync + detection + minimal UI
-6. Deploy to Vercel
-7. Complete the checklist and email us
+6. Deploy to Vercel (add the same env vars in the Vercel project settings)
+7. Complete [`SUBMISSION_CHECKLIST.md`](SUBMISSION_CHECKLIST.md) and email **kane@versaunt.com** and **greg@versaunt.com**
 
-## Questions?
+Grading focuses on **metrics sync, detection, and tasks**. You may seed campaigns/ads from fixtures, but you are not required to build full entity management beyond what your pipeline needs.
 
-Email your Versaunt contact. We will not answer implementation how-to questions — design decisions are part of the exercise.
+## Environment variables
+
+See [`.env.example`](.env.example). At minimum:
+
+| Variable | Where |
+|----------|--------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Client + server |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client + server |
+| `SUPABASE_SERVICE_ROLE_KEY` | **Server only** (sync routes, workers) |
+
+## Supabase team invites (read-only)
+
+Before submitting, invite both founders with **read-only** access:
+
+1. Supabase Dashboard → your project → **Project Settings** → **Team**
+2. **Invite** → `kane@versaunt.com` → role **Read-only**
+3. **Invite** → `greg@versaunt.com` → role **Read-only**
+
+## Contact
+
+| When | Email |
+|------|--------|
+| Starting Phase 1 (clock starts) | **kane@versaunt.com**, **greg@versaunt.com** |
+| Phase 1 complete | Same — use subject line in [`SUBMISSION_CHECKLIST.md`](SUBMISSION_CHECKLIST.md) |
+| Logistics only | Same |
+
+We will not answer implementation how-to questions — design decisions are part of the exercise.
 
 ## License
 
@@ -124,4 +154,4 @@ Mock data and challenge materials: MIT (see [LICENSE](LICENSE)). Your applicatio
 
 ---
 
-**Version:** v1.0
+**Version:** v1.1

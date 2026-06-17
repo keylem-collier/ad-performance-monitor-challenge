@@ -17,8 +17,9 @@ Complete every item before emailing Versaunt that Phase 1 is done.
 ## Supabase
 
 - [ ] Created your own free Supabase project
-- [ ] Invited **`kane@versaunt.com`** — **read-only** role
-- [ ] Invited **`greg@versaunt.com`** — **read-only** role
+- [ ] Copied [`.env.example`](.env.example) → `.env.local` (and matching vars on Vercel)
+- [ ] Invited **`kane@versaunt.com`** — **read-only** (Project Settings → Team → Invite)
+- [ ] Invited **`greg@versaunt.com`** — **read-only**
 - [ ] RLS enabled on all tenant-scoped tables
 
 ## README (in your repo)
@@ -43,7 +44,9 @@ Complete every item before emailing Versaunt that Phase 1 is done.
 
 ## Email us
 
-Subject: `Founding Engineer Challenge — Phase 1 Complete — [Your Name]`
+**To:** kane@versaunt.com, greg@versaunt.com
+
+**Subject:** `Founding Engineer Challenge — Phase 1 Complete — [Your Name]`
 
 Include:
 
