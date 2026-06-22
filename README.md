@@ -40,6 +40,8 @@ You must implement **all** of the following. How you implement them is your choi
 7. **Audit trail** — We can answer "why was this task created?" from stored events or logs.
 8. **Idempotent sync** — Re-running sync does not corrupt data or create incorrect duplicates.
 
+These eight are the bar — scope them to land in the time box. **Optional stretch goals** (incremental/`asof` sync, handling platform restatements, alerts that clear themselves when the problem resolves) are described in [`MOCK_DATA.md`](MOCK_DATA.md). They're not required; reaching for them is good signal, not expected.
+
 ## UI (functional, not graded on polish)
 
 Minimum operator views:
@@ -56,9 +58,9 @@ We care that it works. Visual design is a tiebreaker, not a requirement.
 
 Fixture files live in [`mock-data/`](mock-data/). Read [`MOCK_DATA.md`](MOCK_DATA.md) for:
 
-- Entity shapes (account, campaigns, ads, daily metrics)
-- Pagination contract (2 pages, 150 rows)
-- Embedded detection signals (fatigue, spend spike, edge cases)
+- Entity shapes (accounts, campaigns, ads, daily metrics) — two accounts, 20 ads, 90 days
+- Pagination contract (your route pages `metrics-daily.json`)
+- The kinds of signals in the data (fatigue, spend anomalies, edge cases) — derive them from metrics
 - Failure simulation query params
 
 Copy or import these fixtures into your app. Do not call real Meta, Google, or TikTok APIs.

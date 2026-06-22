@@ -7,17 +7,38 @@
     "objective": "conversions"
   },
   {
-    "id": "camp_200",
+    "id": "camp_110",
     "account_id": "act_mock_1001",
-    "name": "Retargeting — Cart Abandoners",
+    "name": "Trail Gear — Retargeting",
     "status": "active",
     "objective": "conversions"
   },
   {
-    "id": "camp_300",
+    "id": "camp_120",
     "account_id": "act_mock_1001",
-    "name": "Brand Awareness — Video",
+    "name": "Brand — Always On",
+    "status": "active",
+    "objective": "traffic"
+  },
+  {
+    "id": "camp_130",
+    "account_id": "act_mock_1001",
+    "name": "Clearance — Paused",
     "status": "paused",
-    "objective": "awareness"
+    "objective": "conversions"
+  },
+  {
+    "id": "camp_200",
+    "account_id": "act_mock_2002",
+    "name": "Cold Brew Launch",
+    "status": "active",
+    "objective": "conversions"
+  },
+  {
+    "id": "camp_210",
+    "account_id": "act_mock_2002",
+    "name": "Subscriptions — Prospecting",
+    "status": "active",
+    "objective": "conversions"
   }
 ]

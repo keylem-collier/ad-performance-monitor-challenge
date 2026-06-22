@@ -1,0 +1,13 @@
+[
+  {
+    "account_id": "act_mock_1001",
+    "ad_id": "ad_restate",
+    "date": "2026-06-13",
+    "preliminary": {
+      "spend": 880,
+      "conversions": 7
+    },
+    "corrected_on_asof": "2026-06-16",
+    "note": "Spend over-reported, then corrected. Serve `preliminary` when asof < corrected_on_asof; serve the metrics-daily value otherwise."
+  }
+]

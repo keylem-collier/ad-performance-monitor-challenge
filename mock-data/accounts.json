@@ -1,0 +1,18 @@
+[
+  {
+    "id": "act_mock_1001",
+    "name": "Acme Outdoor Co. — Mock Ad Account",
+    "platform": "mock_meta",
+    "currency": "USD",
+    "timezone": "America/New_York",
+    "status": "active"
+  },
+  {
+    "id": "act_mock_2002",
+    "name": "Northwind Coffee Co. — Mock Ad Account",
+    "platform": "mock_meta",
+    "currency": "USD",
+    "timezone": "America/Los_Angeles",
+    "status": "active"
+  }
+]

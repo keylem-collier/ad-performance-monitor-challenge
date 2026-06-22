@@ -2,49 +2,141 @@
   {
     "id": "ad_a",
     "campaign_id": "camp_100",
+    "account_id": "act_mock_1001",
     "name": "Hero Video — Trail Runner v1",
-    "status": "active",
-    "creative_type": "video",
-    "signal_profile": "creative_fatigue"
+    "creative_type": "video"
+  },
+  {
+    "id": "ad_mf",
+    "campaign_id": "camp_100",
+    "account_id": "act_mock_1001",
+    "name": "Carousel — Summit Pack",
+    "creative_type": "carousel"
+  },
+  {
+    "id": "ad_zero",
+    "campaign_id": "camp_110",
+    "account_id": "act_mock_1001",
+    "name": "Static — Tent Closeout",
+    "creative_type": "image"
+  },
+  {
+    "id": "ad_spike",
+    "campaign_id": "camp_110",
+    "account_id": "act_mock_1001",
+    "name": "Video — Kayak Bundle",
+    "creative_type": "video"
+  },
+  {
+    "id": "ad_crash",
+    "campaign_id": "camp_110",
+    "account_id": "act_mock_1001",
+    "name": "Carousel — Cooler Sale",
+    "creative_type": "carousel"
+  },
+  {
+    "id": "ad_restate",
+    "campaign_id": "camp_100",
+    "account_id": "act_mock_1001",
+    "name": "Video — Headlamp Promo",
+    "creative_type": "video"
+  },
+  {
+    "id": "ad_recover",
+    "campaign_id": "camp_100",
+    "account_id": "act_mock_1001",
+    "name": "Hero Image — Backpack v2",
+    "creative_type": "image"
+  },
+  {
+    "id": "ad_gap",
+    "campaign_id": "camp_120",
+    "account_id": "act_mock_1001",
+    "name": "Static — Trail Map Lead",
+    "creative_type": "image"
+  },
+  {
+    "id": "ad_insufficient",
+    "campaign_id": "camp_120",
+    "account_id": "act_mock_1001",
+    "name": "Video — New Launch Teaser",
+    "creative_type": "video"
   },
   {
     "id": "ad_b",
-    "campaign_id": "camp_100",
-    "name": "Static — Product Grid",
-    "status": "active",
-    "creative_type": "image",
-    "signal_profile": "stable_control"
-  },
-  {
-    "id": "ad_c",
-    "campaign_id": "camp_200",
-    "name": "Carousel — Best Sellers",
-    "status": "active",
-    "creative_type": "carousel",
-    "signal_profile": "spend_spike_flat_conversions"
-  },
-  {
-    "id": "ad_d",
-    "campaign_id": "camp_200",
-    "name": "UGC Test — New Hook",
-    "status": "active",
-    "creative_type": "video",
-    "signal_profile": "insufficient_baseline"
-  },
-  {
-    "id": "ad_e",
-    "campaign_id": "camp_300",
-    "name": "Brand Story — 15s Cut",
-    "status": "paused",
-    "creative_type": "video",
-    "signal_profile": "missing_days_gap"
+    "campaign_id": "camp_120",
+    "account_id": "act_mock_1001",
+    "name": "Static — Evergreen Brand",
+    "creative_type": "image"
   },
   {
     "id": "ad_f",
-    "campaign_id": "camp_300",
-    "name": "Logo Animation",
-    "status": "paused",
-    "creative_type": "video",
-    "signal_profile": "stable_control"
+    "campaign_id": "camp_130",
+    "account_id": "act_mock_1001",
+    "name": "Static — Clearance (Paused)",
+    "creative_type": "image"
+  },
+  {
+    "id": "ad_lowvol",
+    "campaign_id": "camp_120",
+    "account_id": "act_mock_1001",
+    "name": "Static — Niche Audience",
+    "creative_type": "image"
+  },
+  {
+    "id": "ad_g",
+    "campaign_id": "camp_200",
+    "account_id": "act_mock_2002",
+    "name": "Video — Cold Brew Hero",
+    "creative_type": "video"
+  },
+  {
+    "id": "ad_h",
+    "campaign_id": "camp_200",
+    "account_id": "act_mock_2002",
+    "name": "Static — Bag Subscription",
+    "creative_type": "image"
+  },
+  {
+    "id": "ad_i",
+    "campaign_id": "camp_210",
+    "account_id": "act_mock_2002",
+    "name": "Carousel — Sampler Pack",
+    "creative_type": "carousel"
+  },
+  {
+    "id": "ad_j",
+    "campaign_id": "camp_210",
+    "account_id": "act_mock_2002",
+    "name": "Video — Origin Story",
+    "creative_type": "video"
+  },
+  {
+    "id": "ad_k",
+    "campaign_id": "camp_200",
+    "account_id": "act_mock_2002",
+    "name": "Static — Gift Set",
+    "creative_type": "image"
+  },
+  {
+    "id": "ad_l",
+    "campaign_id": "camp_210",
+    "account_id": "act_mock_2002",
+    "name": "Static — Retarget Mug",
+    "creative_type": "image"
+  },
+  {
+    "id": "ad_m",
+    "campaign_id": "camp_200",
+    "account_id": "act_mock_2002",
+    "name": "Video — Tasting Notes",
+    "creative_type": "video"
+  },
+  {
+    "id": "ad_n",
+    "campaign_id": "camp_210",
+    "account_id": "act_mock_2002",
+    "name": "Static — Holiday Bundle",
+    "creative_type": "image"
   }
 ]

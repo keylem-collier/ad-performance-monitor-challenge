@@ -1,112 +1,71 @@
 #!/usr/bin/env node
 /**
- * Dry-run validation: verifies mock fixtures support detection rules
- * without candidates inventing extra data.
- *
- * Run: node scripts/validate-fixtures.mjs
+ * Structural sanity check for the mock fixtures — shapes, references, and
+ * pagination math. Does not assert detection outcomes (those are for you to
+ * derive). Run: node scripts/validate-fixtures.mjs
  */
 import { readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const mockDir = join(__dirname, "..", "mock-data");
+const mockDir = join(dirname(fileURLToPath(import.meta.url)), "..", "mock-data");
+const load = (f) => JSON.parse(readFileSync(join(mockDir, f), "utf8"));
 
-const metrics = JSON.parse(readFileSync(join(mockDir, "metrics-daily.json"), "utf8"));
-const ads = JSON.parse(readFileSync(join(mockDir, "ads.json"), "utf8"));
-const page1 = JSON.parse(readFileSync(join(mockDir, "api-responses/success-page1.json"), "utf8"));
-const page2 = JSON.parse(readFileSync(join(mockDir, "api-responses/success-page2.json"), "utf8"));
+const accounts = load("accounts.json");
+const campaigns = load("campaigns.json");
+const ads = load("ads.json");
+const metrics = load("metrics-daily.json");
+const restatements = load("restatements.json");
 
 const errors = [];
-const warnings = [];
+const warn = [];
+const accountIds = new Set(accounts.map((a) => a.id));
+const campaignIds = new Set(campaigns.map((c) => c.id));
+const adIds = new Set(ads.map((a) => a.id));
 
-function avg(arr, key) {
-  if (arr.length === 0) return 0;
-  return arr.reduce((s, r) => s + r[key], 0) / arr.length;
+// Referential integrity
+for (const c of campaigns) if (!accountIds.has(c.account_id)) errors.push(`campaign ${c.id} → unknown account ${c.account_id}`);
+for (const a of ads) {
+  if (!accountIds.has(a.account_id)) errors.push(`ad ${a.id} → unknown account ${a.account_id}`);
+  if (!campaignIds.has(a.campaign_id)) errors.push(`ad ${a.id} → unknown campaign ${a.campaign_id}`);
 }
 
-function lastNDays(adId, n, endDate = "2026-06-16") {
-  const adRows = metrics.filter((r) => r.ad_id === adId).sort((a, b) => a.date.localeCompare(b.date));
-  const endIdx = adRows.findIndex((r) => r.date === endDate);
-  if (endIdx < 0) return [];
-  return adRows.slice(Math.max(0, endIdx - n + 1), endIdx + 1);
+// Metric rows: shape, references, ctr/null rule, no duplicates
+const required = ["date", "ad_id", "campaign_id", "account_id", "impressions", "clicks", "spend", "conversions", "ctr", "frequency"];
+const seen = new Set();
+for (const r of metrics) {
+  for (const k of required) if (!(k in r)) errors.push(`row ${r.ad_id} ${r.date} missing ${k}`);
+  if (!adIds.has(r.ad_id)) errors.push(`metric row → unknown ad ${r.ad_id}`);
+  if (r.impressions === 0 && r.ctr !== null) warn.push(`${r.ad_id} ${r.date}: zero impressions but ctr is ${r.ctr} (expected null)`);
+  if (r.impressions > 0 && r.ctr === null) warn.push(`${r.ad_id} ${r.date}: ctr null but impressions > 0`);
+  const key = `${r.account_id}|${r.ad_id}|${r.date}`;
+  if (seen.has(key)) errors.push(`duplicate row ${key}`);
+  seen.add(key);
 }
 
-// Pagination
-const combined = [...page1.data, ...page2.data];
-if (combined.length !== metrics.length) {
-  errors.push(`Pagination mismatch: pages=${combined.length} metrics=${metrics.length}`);
-}
-if (page1.total_pages !== 2 || page2.total_pages !== 2) {
-  errors.push("total_pages should be 2");
+// Restatements reference real rows
+for (const rs of restatements) {
+  const exists = metrics.some((r) => r.account_id === rs.account_id && r.ad_id === rs.ad_id && r.date === rs.date);
+  if (!exists) errors.push(`restatement ${rs.ad_id} ${rs.date} has no matching metric row`);
+  if (rs.preliminary == null || !rs.corrected_on_asof) errors.push(`restatement ${rs.ad_id} ${rs.date} missing preliminary/corrected_on_asof`);
 }
 
-// ad_a fatigue
-const adA_prior = lastNDays("ad_a", 7, "2026-06-09");
-const adA_last = lastNDays("ad_a", 7, "2026-06-16");
-const ctrDrop = (avg(adA_prior, "ctr") - avg(adA_last, "ctr")) / avg(adA_prior, "ctr");
-const freqRise = avg(adA_last, "frequency") - avg(adA_prior, "frequency");
-
-if (ctrDrop < 0.2) errors.push(`ad_a CTR drop ${(ctrDrop * 100).toFixed(1)}% — expected >= 20%`);
-if (freqRise < 0.4) errors.push(`ad_a frequency rise ${freqRise.toFixed(2)} — expected >= 0.4`);
-
-// ad_b stable
-const adB_prior = lastNDays("ad_b", 7, "2026-06-09");
-const adB_last = lastNDays("ad_b", 7, "2026-06-16");
-const adBCtrDrop = (avg(adB_prior, "ctr") - avg(adB_last, "ctr")) / avg(adB_prior, "ctr");
-if (adBCtrDrop > 0.15) warnings.push(`ad_b CTR drop ${(adBCtrDrop * 100).toFixed(1)}% — may false-positive fatigue rule`);
-
-// ad_c spend spike
-const adC_prior = lastNDays("ad_c", 7, "2026-06-09");
-const adC_last = lastNDays("ad_c", 7, "2026-06-16");
-const spendRatio = avg(adC_last, "spend") / avg(adC_prior, "spend");
-const convFlat = Math.abs(avg(adC_last, "conversions") - avg(adC_prior, "conversions")) < 2;
-if (spendRatio < 1.35) errors.push(`ad_c spend ratio ${spendRatio.toFixed(2)} — expected >= 1.35`);
-if (!convFlat) warnings.push("ad_c conversions not flat — spend-spike rule may be noisy");
-
-// ad_d insufficient baseline
-const adDRows = metrics.filter((r) => r.ad_id === "ad_d");
-if (adDRows.length !== 2) errors.push(`ad_d should have 2 days, has ${adDRows.length}`);
-
-// ad_e missing days
-const adEDates = new Set(metrics.filter((r) => r.ad_id === "ad_e").map((r) => r.date));
-if (adEDates.has("2026-05-30") || adEDates.has("2026-05-31")) {
-  errors.push("ad_e should be missing 2026-05-30 and 2026-05-31");
+// Per-account pagination math (page size 100)
+const dates = metrics.map((r) => r.date).sort();
+console.log("=== Fixture validation ===\n");
+console.log(`accounts: ${accounts.length} · campaigns: ${campaigns.length} · ads: ${ads.length}`);
+console.log(`metric rows: ${metrics.length} · range ${dates[0]} … ${dates[dates.length - 1]}`);
+for (const acc of accounts) {
+  const n = metrics.filter((r) => r.account_id === acc.id).length;
+  console.log(`  ${acc.id}: ${n} rows → ${Math.ceil(n / 100)} pages @ size 100`);
 }
+console.log(`null-ctr rows: ${metrics.filter((r) => r.ctr === null).length} · restatements: ${restatements.length}\n`);
 
-// API error envelopes
 for (const file of ["rate_limit.json", "auth_expired.json", "timeout.json"]) {
-  const body = JSON.parse(readFileSync(join(mockDir, "api-responses", file), "utf8"));
+  const body = load(join("api-responses", file));
   if (!body.error?.code) errors.push(`${file} missing error.code`);
 }
 
-// Row count sanity
-const expectedAds = ads.length;
-const dates = 30;
-const adD_missing = 28; // ad_d only 2 days
-const adE_missing = 2; // 2 gap days
-const expectedRows = expectedAds * dates - adD_missing - adE_missing;
-if (metrics.length !== expectedRows) {
-  warnings.push(`Row count ${metrics.length} vs expected ~${expectedRows}`);
-}
-
-console.log("=== Fixture validation ===\n");
-console.log("ad_a: CTR drop", `${(ctrDrop * 100).toFixed(1)}%`, "| freq rise", freqRise.toFixed(2));
-console.log("ad_c: spend ratio", spendRatio.toFixed(2));
-console.log("ad_d: days", adDRows.length);
-console.log("Pagination rows:", combined.length, "/", metrics.length);
-console.log("");
-
-if (warnings.length) {
-  console.log("Warnings:");
-  warnings.forEach((w) => console.log("  ⚠", w));
-  console.log("");
-}
-
-if (errors.length) {
-  console.log("Errors:");
-  errors.forEach((e) => console.log("  ✗", e));
-  process.exit(1);
-}
-
-console.log("✓ All fixture checks passed. Ready for candidate use.");
+if (warn.length) { console.log("Warnings:"); warn.slice(0, 10).forEach((w) => console.log("  ⚠", w)); if (warn.length > 10) console.log(`  … +${warn.length - 10} more`); console.log(""); }
+if (errors.length) { console.log("Errors:"); errors.forEach((e) => console.log("  ✗", e)); process.exit(1); }
+console.log("✓ Structure looks good. Ready for candidate use.");
